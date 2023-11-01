@@ -1307,7 +1307,21 @@
 			status = "disabled";
 		};
 
-		usb: usb@78d9000 {
+		usb_hs_phy: phy@6c000 {
+			compatible = "qcom,usb-hs-28nm-femtophy";
+			reg = <0x6c000 0x200>;
+			#phy-cells = <0>;
+			clocks = <&xo_board>,
+				 <&gcc GCC_USB_HS_PHY_CFG_AHB_CLK>,
+				 <&gcc GCC_USB2A_PHY_SLEEP_CLK>;
+			clock-names = "ref", "ahb", "sleep";
+			resets = <&gcc GCC_QUSB2_PHY_BCR>,
+				 <&gcc GCC_USB2_HS_PHY_ONLY_BCR>;
+			reset-names = "phy", "por";
+			status = "disabled";
+		};
+
+		usb: usb@78db000 {
 			compatible = "qcom,ci-hdrc";
 			reg = <0x078db000 0x200>,
 			      <0x078db200 0x200>;
@@ -1330,20 +1344,6 @@
 			phys = <&usb_hs_phy>;
 			status = "disabled";
 			#reset-cells = <1>;
-
-			ulpi {
-				usb_hs_phy: phy {
-					compatible = "qcom,usb-hs-phy-msm8916",
-						     "qcom,usb-hs-phy";
-					#phy-cells = <0>;
-					clocks = <&xo_board>, <&gcc GCC_USB2A_PHY_SLEEP_CLK>;
-					clock-names = "ref", "sleep";
-					resets = <&gcc GCC_QUSB2_PHY_BCR>, <&usb 0>;
-					reset-names = "phy", "por";
-					qcom,init-seq = /bits/ 8 <0x0 0x44
-						0x1 0x6b 0x2 0x24 0x3 0x13>;
-				};
-			};
 		};
 
 		pronto: wcnss: remoteproc@a21b000 {
